@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.agents/
+.tools/
+*.log
+*.docm
+*.bat
+*.vbs
+*.url
+项目/
