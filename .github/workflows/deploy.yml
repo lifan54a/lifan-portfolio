@@ -36,7 +36,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm build -- --base=/lifan-portfolio/
+        run: pnpm exec vite build --base=/lifan-portfolio/
 
       - name: Add SPA fallback
         run: cp dist/index.html dist/404.html
