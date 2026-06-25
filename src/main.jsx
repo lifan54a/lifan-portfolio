@@ -400,7 +400,7 @@ function KolVideoCarousel() {
     if (videoTipSeen) return;
     setVideoTipSeen(true);
     setVideoTipVisible(true);
-    window.setTimeout(() => setVideoTipVisible(false), 2800);
+    window.setTimeout(() => setVideoTipVisible(false), 3500);
   };
 
   return (
@@ -604,7 +604,7 @@ function ContentVideoCarousel() {
     if (videoTipSeen) return;
     setVideoTipSeen(true);
     setVideoTipVisible(true);
-    window.setTimeout(() => setVideoTipVisible(false), 2800);
+    window.setTimeout(() => setVideoTipVisible(false), 3500);
   };
 
   return (
