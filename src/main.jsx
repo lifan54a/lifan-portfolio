@@ -1,9 +1,52 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
+import BorderGlow from "./components/BorderGlow/BorderGlow";
+import Aurora from "./components/Aurora/Aurora";
 import "./styles.css";
+
+const Beams = lazy(() => import("./components/Beams/Beams"));
+
+const glowThemes = {
+  cyan: { glowColor: "178 72 67", colors: ["#63e6e2", "#4f8cff", "#e4b768"] },
+  amber: { glowColor: "39 70 65", colors: ["#e4b768", "#ff8f6b", "#63e6e2"] },
+  violet: { glowColor: "250 78 72", colors: ["#9c8cff", "#d45bff", "#63e6e2"] },
+  green: { glowColor: "137 55 68", colors: ["#82d99a", "#63e6e2", "#e4b768"] },
+};
+
+function CardGlow({ children, className = "", tone = "cyan", animated = false }) {
+  const theme = glowThemes[tone] || glowThemes.cyan;
+  return (
+    <BorderGlow
+      className={`portfolio-glow ${className}`}
+      edgeSensitivity={34}
+      glowRadius={30}
+      glowIntensity={0.72}
+      coneSpread={23}
+      fillOpacity={0.3}
+      animated={animated}
+      {...theme}
+    >
+      {children}
+    </BorderGlow>
+  );
+}
+
+function AuroraBackdrop({ className = "" }) {
+  return (
+    <div className={`page-aurora-bg ${className}`} aria-hidden="true">
+      <Aurora
+        colorStops={["#63e6e2", "#2f6f8f", "#e4b768"]}
+        blend={0.62}
+        amplitude={1.18}
+        speed={0.72}
+      />
+    </div>
+  );
+}
 
 const assetPath = (path) => path.startsWith("http") ? path : `${import.meta.env.BASE_URL}${path.replace(/^\/+/, "")}`;
 const avatarSrc = assetPath("/resume-image-1-1.png");
+const wechatQrSrc = assetPath("/contact/wechat-qr.jpg");
 
 const contactInfo = [
   { label: "手机号", value: "19230649854", icon: "phone" },
@@ -15,17 +58,30 @@ const timeline = [
   {
     period: "2020.09 - 2025.05",
     company: "武汉米创科技有限公司",
+    logo: "/company/michuang-logo.png",
     role: "新媒体运营 / 活动策划",
     intro: "主导公司核心新媒体营销项目，从策划、内容生产、落地复盘，推进全流程管理，并负责公司官方公众号、视频号、抖音等新媒体平台运营。",
     points: ["5 大核心新媒体营销项目按时交付", "账号粉丝增长 12.8 万", "十余场省级及地方大型活动策划执行", "每日监测 10+ 项运营数据", "连续三年荣获企业优秀员工", "带领 5 人新媒体团队协同推进项目"],
+    stats: [
+      ["Top1", "行业内品牌影响力"],
+      ["12.8W", "账号粉丝增长"],
+    ],
   },
   {
     period: "2025.05 - 2026.05",
     company: "深圳市阳林合科技有限公司",
     note: "创业公司",
+    avatars: [
+      { src: "/projects/overseas-growth/social-avatar.jpg", alt: "JalanJalan China 头像" },
+      { src: "/projects/overseas-growth/vk-avatar.png", alt: "WOW China 头像" },
+    ],
     role: "品牌运营 / 海外增长运营",
     intro: "独立负责海外文旅品牌全链路品牌建设与海外新媒体运营，主导品牌体系、海外流量矩阵、内容商业化运营、外部资源合作等核心工作。",
     points: ["品牌视觉体系从 0 到 1 搭建", "海外社媒矩阵搭建与精细化运营", "短视频全流程内容创作", "海外付费投流与数据化优化", "产品设计开发与路线规划", "外部资源拓展与项目全案落地"],
+    stats: [
+      ["120W+", "海外项目曝光"],
+      ["500W+", "合作 KOL 全网粉丝"],
+    ],
   },
 ];
 
@@ -55,7 +111,7 @@ const projects = [
     period: "2025.12 - 2026.01 / 北京 - 哈尔滨 - 亚布力",
     tone: "amber",
     cover: "/projects/kol-china-trip/cover.jpg",
-    summary: "围绕马来西亚头部达人 Leng Yein 林云及姐妹中国行，完成冰雪文旅路线策划、供应商统筹、内容跟拍、社媒传播和私域转化闭环。",
+    summary: "围绕马来西亚头部达人 Leng Yein 林云姐妹中国行，完成冰雪文旅路线策划、供应商统筹、内容跟拍、社媒传播和私域转化闭环。",
     metrics: ["100万+ 全网曝光", "60万+ 内容访问", "500万+ KOL 全网粉丝", "100+ 咨询社群"],
     detail: ["独立设计京哈冰雪文旅行程，串联北京文化体验、哈尔滨冰雪大世界、亚布力滑雪与冰雪写真场景。", "统筹写真摄影、跟拍、无人机、地接、妆造、服装、保暖与交通住宿等供应方资源。", "围绕 Instagram、Facebook、TikTok 等平台完成内容节奏规划、素材沉淀、线上推广和客户跟进。", "项目沉淀 Jalan-Jalan Harbin 专题账号和马来西亚游客咨询社群，形成文旅出海 KOL 营销案例。"],
   },
@@ -189,7 +245,7 @@ const software = [
   { name: "Adobe Illustrator", level: "精通掌握", src: "/icon/资源 9.png", desc: "可完成矢量绘制、品牌图形、Logo 延展、图标与宣传物料基础设计。" },
   { name: "Adobe Premiere Pro", level: "熟悉使用", src: "/icon/资源 7.png", desc: "可完成基础短视频剪辑、字幕音效、活动回顾与品牌视频成片输出。" },
   { name: "剪映 / CapCut", level: "精通掌握", src: "/icon/资源 6.png", desc: "可完成口播、探店、活动花絮、平台化短视频包装和高效批量剪辑。" },
-  { name: "PDF 工具", level: "精通掌握", src: "/icon/资源 5.png", desc: "可完成 PDF 整理、压缩、批注、转档、合并拆分与对外资料交付优化。" },
+  { name: "Adobe Acrobat", level: "精通掌握", src: "/icon/资源 5.png", desc: "可完成 PDF 整理、压缩、批注、转档、合并拆分与对外资料交付优化。" },
   { name: "OpenAI", level: "精通掌握", src: "/icon/资源 3.png", whiteBg: true, desc: "可用于选题策划、脚本打磨、内容改写、方案推演与运营效率提升。" },
   { name: "Gemini", level: "精通掌握", src: "/icon/资源 10.png", desc: "可辅助资料分析、创意发散、图片理解、跨语言内容整理与生成视频制作。" },
   { name: "Claude", level: "中等掌握", src: "/icon/资源 2.png", whiteBg: true, desc: "可辅助长文梳理、资料总结、方案校对、文案优化与内容逻辑检查。" },
@@ -202,7 +258,7 @@ const extendedSkills = [
   { title: "AI Agent 搭建", icon: "agent" },
   { title: "独立站 SaaS 建站", icon: "saas" },
   { title: "海外支付", icon: "pay" },
-  { title: "更多能力", icon: "more" },
+  { title: "更多技能，等你发现...", icon: "discover" },
 ];
 
 function useRoute() {
@@ -250,7 +306,7 @@ function MiniSkillIcon({ type }) {
     agent: "M7 11a5 5 0 0 1 10 0v5H7v-5Zm2-4V4m6 3V4M5 14H3m18 0h-2M10 13h.1M14 13h.1",
     saas: "M5 17h14M7 17V8h4v9m2 0V5h4v12M4 21h16",
     pay: "M4 7h16v10H4V7Zm0 3h16M7 14h4",
-    more: "M6 12h.1M12 12h.1M18 12h.1",
+    discover: "M12 3l1.7 5.1L19 10l-5.3 1.9L12 17l-1.7-5.1L5 10l5.3-1.9L12 3Zm6 13 1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3ZM5 4l.7 2.1L8 7l-2.3.9L5 10l-.7-2.1L2 7l2.3-.9L5 4Z",
   };
   return <svg className="mini-skill-icon" viewBox="0 0 24 24" aria-hidden="true"><path d={paths[type]} /></svg>;
 }
@@ -285,7 +341,7 @@ function ContactModal({ open, onClose }) {
         <p className="eyebrow">Contact Card</p>
         <h2>联系方式</h2>
         <div className="contact-list">
-          {contactInfo.map((item) => <button type="button" key={item.label} onClick={() => copyContact(item)}><ContactIcon type={item.icon} /><span>{item.label}</span><strong>{item.value}</strong></button>)}
+          {contactInfo.map((item) => <button className={item.icon === "wechat" ? "has-qr-preview" : ""} type="button" key={item.label} onClick={() => copyContact(item)}><ContactIcon type={item.icon} /><span>{item.label}</span><strong>{item.value}</strong>{item.icon === "wechat" ? <span className="wechat-qr-preview" aria-hidden="true"><em>请扫描二维码添加微信好友</em><img src={wechatQrSrc} alt="" /></span> : null}</button>)}
         </div>
         <p className={`copy-hint ${copied ? "show" : ""}`}>{copied === "复制失败" ? "复制失败，请手动复制" : `${copied}已复制`}</p>
       </div>
@@ -296,16 +352,17 @@ function ContactModal({ open, onClose }) {
 function Home({ navigate }) {
   const [contactOpen, setContactOpen] = useState(false);
   const showContact = () => setContactOpen(true);
-  return <><div className="noise" /><Header onContact={showContact} /><main>
-    <section className="hero" id="hero"><video className="hero-video" autoPlay loop muted playsInline poster={assetPath("/visual-poster.svg")}><source src={assetPath("/hero-bg.mp4")} type="video/mp4" /></video><div className="motion"><span/><span/><span/></div><div className="hero-inner"><p className="eyebrow">New Media Operations / Brand Growth</p><h1>把品牌、内容与增长，做成可以持续运转的系统。</h1><p>我是栗帆，新媒体运营与海外增长运营。擅长从 0 到 1 搭建品牌传播体系，统筹社媒矩阵、短视频内容、投流优化、活动策划与项目落地。</p><div className="actions"><a className="primary" href="#projects">查看项目</a><ContactButton className="ghost" onClick={showContact}>获取联系</ContactButton></div></div><div className="hero-bottom"><span>Portfolio 2026</span><span>Shenzhen / Overseas Growth</span></div></section>
+  return <><div className="noise" /><Header onContact={showContact} /><main className="home-main">
+    <section className="hero" id="hero"><div className="hero-beams-bg" aria-hidden="true"><Suspense fallback={null}><Beams beamWidth={2.8} beamHeight={20} beamNumber={20} lightColor="#7df7f2" speed={2.45} noiseIntensity={1.05} scale={0.16} rotation={-10} /></Suspense></div><video className="hero-video" autoPlay loop muted playsInline poster={assetPath("/visual-poster.svg")}><source src={assetPath("/hero-bg.mp4")} type="video/mp4" /></video><div className="motion"><span/><span/><span/></div><div className="hero-inner"><p className="eyebrow">New Media Operations / Brand Growth</p><h1>把品牌、内容与增长，做成可以持续运转的系统。</h1><p>我是栗帆，新媒体运营与海外增长运营。擅长从 0 到 1 搭建品牌传播体系，统筹社媒矩阵、短视频内容、投流优化、活动策划与项目落地。</p><div className="actions"><a className="primary" href="#projects">查看项目</a><ContactButton className="ghost" onClick={showContact}>获取联系</ContactButton></div></div><div className="hero-bottom"><span>Portfolio 2026</span><span>Shenzhen / Overseas Growth</span></div></section>
+    <AuroraBackdrop className="home-aurora-bg" />
 
-    <section className="section" id="experience"><div className="section-head wide"><p className="eyebrow">Profile</p><h2>个人经历</h2></div><div className="experience-layout"><div className="timeline">{timeline.map((job) => <article className="timeline-item" key={job.period}><time>{job.period}</time><div><h3>{job.company}{job.note ? <span className="company-note">{job.note}</span> : null}</h3><strong>{job.role}</strong><p>{job.intro}</p><ul>{job.points.map((point) => <li key={point}>{point}</li>)}</ul></div></article>)}</div><div className="stats">{stats.map(([v,l]) => <div className="stat" key={l}><strong>{v}</strong><span>{l}</span></div>)}</div></div></section>
+    <section className="section" id="experience"><div className="section-head wide"><p className="eyebrow">Profile</p><h2>个人经历</h2></div><div className="experience-layout"><div className="timeline">{timeline.map((job, index) => <CardGlow className="timeline-glow" key={job.period} tone="cyan" animated={index === 0}><article className="timeline-item"><div className="timeline-meta"><time>{job.period}</time>{job.logo ? <span className="company-logo-badge"><img className="company-logo" src={assetPath(job.logo)} alt={`${job.company} logo`} /></span> : null}{job.avatars ? <div className="company-avatar-stack">{job.avatars.map((avatar) => <span className="company-avatar" key={avatar.src}><img src={assetPath(avatar.src)} alt={avatar.alt} /></span>)}</div> : null}</div><div><h3>{job.company}{job.note ? <span className="company-note">{job.note}</span> : null}</h3><strong>{job.role}</strong><p>{job.intro}</p><ul>{job.points.map((point) => <li key={point}>{point}</li>)}</ul></div><div className="job-stat-grid">{job.stats.map(([v,l]) => <div className="job-stat" key={l}><strong>{v}</strong><span>{l}</span></div>)}</div></article></CardGlow>)}</div></div></section>
 
-    <section className="section" id="projects"><div className="section-head wide"><p className="eyebrow">Selected Projects</p><h2>精选项目</h2></div><div className="project-grid">{projects.map((p) => { const artSrc = p.cardCover || p.cover; return <button className={'project-card project-'+p.id+' tone-'+p.tone} key={p.id} onClick={() => navigate('/projects/'+p.id)}><div className="project-art">{artSrc ? <img src={assetPath(artSrc)} alt="" /> : <><span/><span/><span/></>}</div><div className="project-content"><span className="tag">{p.tag}</span><h3>{p.title}</h3><p>{p.summary}</p><div className="metrics">{p.metrics.map((m) => <span key={m}>{m}</span>)}</div></div></button>; })}</div></section>
+    <section className="section" id="projects"><div className="section-head wide"><p className="eyebrow">Selected Projects</p><h2>精选项目</h2></div><div className="project-grid">{projects.map((p) => { const artSrc = p.cardCover || p.cover; return <CardGlow className="project-glow" key={p.id} tone={p.tone}><button className={'project-card project-'+p.id+' tone-'+p.tone} onClick={() => navigate('/projects/'+p.id)}><div className="project-art">{artSrc ? <img src={assetPath(artSrc)} alt="" /> : <><span/><span/><span/></>}</div><div className="project-content"><span className="tag">{p.tag}</span><h3>{p.title}</h3><p>{p.summary}</p><div className="metrics">{p.metrics.map((m) => <span key={m}>{m}</span>)}</div></div></button></CardGlow>; })}</div></section>
 
-    <section className="section works-section" id="works"><div className="section-head"><p className="eyebrow">Works</p><h2>作品展示</h2></div><div className="works-grid">{works.map(([title, text], index) => <article className="work-card" key={title}><div className="work-visual"><span>{String(index + 1).padStart(2, "0")}</span></div><h3>{title}</h3><p>{text}</p></article>)}</div></section>
+    <section className="section works-section" id="works"><div className="section-head"><p className="eyebrow">Works</p><h2>作品展示</h2></div><div className="works-grid">{works.map(([title, text], index) => <CardGlow className="work-glow" key={title} tone={["cyan", "amber", "violet", "green"][index % 4]}><article className="work-card"><div className="work-visual"><span>{String(index + 1).padStart(2, "0")}</span></div><h3>{title}</h3><p>{text}</p></article></CardGlow>)}</div></section>
 
-    <section className="section" id="strengths"><div className="section-head wide"><p className="eyebrow">Strengths & Toolkit</p><h2>个人优势</h2></div><div className="strength-layout"><div className="strength-grid">{abilities.map(([t,txt],i) => <article className="strength" key={t}><span>{String(i+1).padStart(2,'0')}</span><h3>{t}</h3><p>{txt}</p></article>)}</div><aside className="software-panel"><div><p className="eyebrow">掌握技能</p><div className="software-grid">{software.map((item) => <span className={`software-icon ${item.whiteBg ? "white-logo" : ""}`} key={item.name} tabIndex="0" aria-label={`${item.name}：${item.level}，${item.desc}`}><span className="logo-plate"><img src={assetPath(item.src)} alt="" /></span><span className="skill-tooltip"><strong>{item.name}</strong><em>{item.level}</em><small>{item.desc}</small></span></span>)}</div></div><div className="extended-skill-panel"><p className="eyebrow">延展能力</p><div className="extended-skill-grid">{extendedSkills.map((item) => <article className={`extended-skill ${item.icon === "more" ? "is-more" : ""}`} key={item.title}><MiniSkillIcon type={item.icon} /><span>{item.icon === "more" ? "..." : item.title}</span></article>)}</div></div></aside></div></section>
+    <section className="section" id="strengths"><div className="section-head wide"><p className="eyebrow">Strengths & Toolkit</p><h2>个人优势</h2></div><div className="strength-layout"><div className="strength-grid">{abilities.map(([t,txt],i) => <CardGlow className="strength-glow" key={t} tone={["cyan", "amber", "violet", "green", "cyan", "violet"][i % 6]}><article className="strength"><span>{String(i+1).padStart(2,'0')}</span><h3>{t}</h3><p>{txt}</p></article></CardGlow>)}</div><aside className="software-panel"><div><p className="eyebrow">掌握技能</p><div className="software-grid">{software.map((item) => <span className={`software-icon ${item.whiteBg ? "white-logo" : ""}`} key={item.name} tabIndex="0" aria-label={`${item.name}：${item.level}，${item.desc}`}><span className="logo-plate"><img src={assetPath(item.src)} alt="" /></span><span className="skill-tooltip"><strong>{item.name}</strong><em>{item.level}</em><small>{item.desc}</small></span></span>)}</div></div><div className="extended-skill-panel"><p className="eyebrow">延展能力</p><div className="extended-skill-grid">{extendedSkills.map((item) => <article className="extended-skill" key={item.title}><MiniSkillIcon type={item.icon} /><span>{item.title}</span></article>)}</div></div></aside></div></section>
 
     <section className="contact" id="contact"><div><p className="eyebrow">Contact</p><h2>期待和清晰、有执行力的团队一起，把增长做实。</h2><p>可围绕新媒体运营、品牌运营、海外增长、短视频内容、活动策划和项目统筹展开合作。</p><div className="actions"><ContactButton className="primary" onClick={showContact}>查看联系方式</ContactButton><a className="ghost" href="#hero">回到顶部</a></div></div></section>
   </main><ContactModal open={contactOpen} onClose={() => setContactOpen(false)} /></>;
@@ -333,9 +390,17 @@ function KolSocialCarousel() {
 
 function KolVideoCarousel() {
   const [active, setActive] = useState(0);
+  const [videoTipSeen, setVideoTipSeen] = useState(false);
+  const [videoTipVisible, setVideoTipVisible] = useState(false);
   const current = kolVideoCases[active];
   const go = (direction) => {
     setActive((value) => (value + direction + kolVideoCases.length) % kolVideoCases.length);
+  };
+  const showVideoTip = () => {
+    if (videoTipSeen) return;
+    setVideoTipSeen(true);
+    setVideoTipVisible(true);
+    window.setTimeout(() => setVideoTipVisible(false), 1700);
   };
 
   return (
@@ -348,7 +413,8 @@ function KolVideoCarousel() {
       </div>
       <div className="kol-video-stage">
         <button className="carousel-arrow prev" type="button" onClick={() => go(-1)} aria-label="上一个视频">‹</button>
-        <div className={`kol-video-frame ${current.ratio || "portrait"}`}>
+        <div className={`kol-video-frame ${current.ratio || "portrait"}`} onMouseEnter={showVideoTip}>
+          <span className={`video-access-tip ${videoTipVisible ? "show" : ""}`}>该视频来自海外平台，如无法播放，请切换网络环境。</span>
           <iframe key={current.embed} src={current.embed} title={current.title} allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowFullScreen loading="lazy" />
         </div>
         <button className="carousel-arrow next" type="button" onClick={() => go(1)} aria-label="下一个视频">›</button>
@@ -528,9 +594,17 @@ function SocialChannelCard({ item }) {
 
 function ContentVideoCarousel() {
   const [active, setActive] = useState(0);
+  const [videoTipSeen, setVideoTipSeen] = useState(false);
+  const [videoTipVisible, setVideoTipVisible] = useState(false);
   const current = contentVideoCases[active];
   const go = (direction) => {
     setActive((value) => (value + direction + contentVideoCases.length) % contentVideoCases.length);
+  };
+  const showVideoTip = () => {
+    if (videoTipSeen) return;
+    setVideoTipSeen(true);
+    setVideoTipVisible(true);
+    window.setTimeout(() => setVideoTipVisible(false), 1700);
   };
 
   return (
@@ -547,7 +621,8 @@ function ContentVideoCarousel() {
           <a href={current.url} target="_blank" rel="noreferrer">打开原链接</a>
         </div>
       </div>
-      <div className="video-frame-wrap">
+      <div className="video-frame-wrap" onMouseEnter={showVideoTip}>
+        <span className={`video-access-tip ${videoTipVisible ? "show" : ""}`}>该视频来自海外平台，如无法播放，请切换网络环境。</span>
         <button className="carousel-arrow prev" type="button" onClick={() => go(-1)} aria-label="上一个视频">‹</button>
         {current.embed ? <iframe key={current.embed} src={current.embed} title={current.title} allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowFullScreen loading="lazy" /> : <div className="video-link-fallback"><span>{current.platform}</span><strong>{current.title}</strong><p>该分享链接不支持稳定内嵌播放，点击下方按钮打开原视频查看。</p><a href={current.url} target="_blank" rel="noreferrer">打开视频</a></div>}
         <button className="carousel-arrow next" type="button" onClick={() => go(1)} aria-label="下一个视频">›</button>
@@ -902,7 +977,7 @@ function ProjectPage({ project, navigate }) {
   const hasCustomHero = project.id === "kol-china-trip" || project.id === "overseas-growth";
 
   const pageStyle = project.id === "overseas-growth" ? { "--project-bg": `url("${assetPath("/projects/overseas-growth/cover-social.png")}")` } : undefined;
-  return <><div className="noise"/><header className="detail-header"><button className="ghost" type="button" onClick={() => navigate('/')}>返回首页</button><ContactButton onClick={() => setContactOpen(true)} /></header><main className={`detail-page tone-${project.tone} project-detail-${project.id}`} style={pageStyle}><section className={`detail-hero ${hasCustomHero ? "compact" : ""}`}><div><p className="eyebrow">{project.tag}</p>{project.id === "overseas-growth" ? <h1 className="balanced-title"><span>JalanJalan China</span><span>海外文旅品牌从 0 到 1</span></h1> : <h1>{project.title}</h1>}<p>{project.summary}</p></div>{hasCustomHero ? null : <div className={`detail-visual ${project.cover ? "with-cover" : ""}`}>{project.cover ? <img src={assetPath(project.cover)} alt={`${project.title}封面`} /> : <><span/><span/><span/></>}</div>}</section><section className={`detail-body ${detailClass}`}>{project.id === "kol-china-trip" ? <KolPeriodCard /> : project.id === "overseas-growth" ? <ProjectPeriodCard startYear="2025" startMonth="11" startLabel="Nov" endYear="2026" endMonth="05" endLabel="May" /> : <div className="detail-meta"><span>项目周期</span><strong>{project.period}</strong></div>}<div className={`detail-meta ${project.id === "kol-china-trip" || project.id === "overseas-growth" ? "visual-results" : ""}`}><span>关键结果</span>{project.id === "kol-china-trip" || project.id === "overseas-growth" ? <KeyResultGrid metrics={project.metrics} /> : <strong>{project.metrics.join(' / ')}</strong>}</div><div className="detail-list"><h2>项目职责与亮点</h2><div className="detail-point-list">{project.detail.map((x, index) => <p key={x}>{project.id === "kol-china-trip" ? <KolDetailPointIcon index={index} /> : project.id === "overseas-growth" ? <OverseasDetailPointIcon index={index} /> : <DetailPointIcon index={index} />}<span>{x}</span></p>)}</div></div></section>{project.id === "overseas-growth" ? <OverseasGrowthCase /> : null}{project.id === "kol-china-trip" ? <KolChinaTripCase /> : null}</main><ContactModal open={contactOpen} onClose={() => setContactOpen(false)} /></>;
+  return <><div className="noise"/><header className="detail-header"><button className="ghost" type="button" onClick={() => navigate('/')}>返回首页</button><ContactButton onClick={() => setContactOpen(true)} /></header><main className={`detail-page tone-${project.tone} project-detail-${project.id}`} style={pageStyle}><AuroraBackdrop className="detail-aurora-bg" /><section className={`detail-hero ${hasCustomHero ? "compact" : ""}`}><div><p className="eyebrow">{project.tag}</p>{project.id === "overseas-growth" ? <h1 className="balanced-title"><span>JalanJalan China</span><span>海外文旅品牌从 0 到 1</span></h1> : <h1>{project.title}</h1>}<p>{project.summary}</p></div>{hasCustomHero ? null : <div className={`detail-visual ${project.cover ? "with-cover" : ""}`}>{project.cover ? <img src={assetPath(project.cover)} alt={`${project.title}封面`} /> : <><span/><span/><span/></>}</div>}</section><section className={`detail-body ${detailClass}`}>{project.id === "kol-china-trip" ? <KolPeriodCard /> : project.id === "overseas-growth" ? <ProjectPeriodCard startYear="2025" startMonth="11" startLabel="Nov" endYear="2026" endMonth="05" endLabel="May" /> : <div className="detail-meta"><span>项目周期</span><strong>{project.period}</strong></div>}<div className={`detail-meta ${project.id === "kol-china-trip" || project.id === "overseas-growth" ? "visual-results" : ""}`}><span>关键结果</span>{project.id === "kol-china-trip" || project.id === "overseas-growth" ? <KeyResultGrid metrics={project.metrics} /> : <strong>{project.metrics.join(' / ')}</strong>}</div><div className="detail-list"><h2>项目职责与亮点</h2><div className="detail-point-list">{project.detail.map((x, index) => <p key={x}>{project.id === "kol-china-trip" ? <KolDetailPointIcon index={index} /> : project.id === "overseas-growth" ? <OverseasDetailPointIcon index={index} /> : <DetailPointIcon index={index} />}<span>{x}</span></p>)}</div></div></section>{project.id === "overseas-growth" ? <OverseasGrowthCase /> : null}{project.id === "kol-china-trip" ? <KolChinaTripCase /> : null}</main><ContactModal open={contactOpen} onClose={() => setContactOpen(false)} /></>;
 }
 
 function App() {

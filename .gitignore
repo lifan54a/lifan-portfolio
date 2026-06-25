@@ -1,5 +1,8 @@
 node_modules/
 dist/
+.pnpm-cache/
+.pnpm-home/
+.pnpm-store/
 .agents/
 .tools/
 *.log
