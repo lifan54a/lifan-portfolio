@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import React, { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import BorderGlow from "./components/BorderGlow/BorderGlow";
 import Aurora from "./components/Aurora/Aurora";
@@ -10,7 +10,7 @@ const glowThemes = {
   cyan: { glowColor: "178 72 67", colors: ["#63e6e2", "#4f8cff", "#e4b768"] },
   amber: { glowColor: "39 70 65", colors: ["#e4b768", "#ff8f6b", "#63e6e2"] },
   violet: { glowColor: "250 78 72", colors: ["#9c8cff", "#d45bff", "#63e6e2"] },
-  green: { glowColor: "137 55 68", colors: ["#82d99a", "#63e6e2", "#e4b768"] },
+  green: { glowColor: "166 58 67", colors: ["#7bdac7", "#63e6e2", "#e4b768"] },
 };
 
 function CardGlow({ children, className = "", tone = "cyan", animated = false }) {
@@ -36,9 +36,9 @@ function AuroraBackdrop({ className = "" }) {
     <div className={`page-aurora-bg ${className}`} aria-hidden="true">
       <Aurora
         colorStops={["#63e6e2", "#2f6f8f", "#e4b768"]}
-        blend={0.62}
-        amplitude={1.18}
-        speed={0.72}
+        blend={0.5}
+        amplitude={1.35}
+        speed={1.08}
       />
     </div>
   );
@@ -61,7 +61,7 @@ const timeline = [
     logo: "/company/michuang-logo.png",
     role: "新媒体运营 / 活动策划",
     intro: "主导公司核心新媒体营销项目，从策划、内容生产、落地复盘，推进全流程管理，并负责公司官方公众号、视频号、抖音等新媒体平台运营。",
-    points: ["5 大核心新媒体营销项目按时交付", "账号粉丝增长 12.8 万", "十余场省级及地方大型活动策划执行", "每日监测 10+ 项运营数据", "连续三年荣获企业优秀员工", "带领 5 人新媒体团队协同推进项目"],
+    points: ["5 大核心新媒体营销项目按时交付", "账号粉丝增长 12.8 万", "十余场省级及地方大型活动策划执行", "每日监测 10+ 项运营数据", "连续三年荣获企业优秀员工", "创建 5 人新媒体团队协同推进项目"],
     stats: [
       ["Top1", "行业内品牌影响力"],
       ["12.8W", "账号粉丝增长"],
@@ -117,23 +117,90 @@ const projects = [
   },
   {
     id: "media-matrix",
-    title: "国内新媒体矩阵运营",
-    tag: "内容运营 / 品牌推广",
+    title: "多平台矩阵运营与品牌内容建设",
+    tag: "公众号运营 / 内容策划 / 视觉物料",
     period: "2022 - 2024",
     tone: "violet",
-    summary: "负责公司官方公众号、视频号、抖音等平台运营，围绕品牌形象、内容栏目和活动传播持续输出内容，提升品牌曝光与用户认知。",
-    metrics: ["12.8W 粉丝增长", "10+ 指标监测", "月度复盘报告"],
-    detail: ["围绕品牌推广、产品宣传、用户裂变、活动策划和私域直播推进项目落地。", "拆解策划、内容生产、投放、复盘四大节点，确保项目按时交付。", "基于完播率、关注度、转化路径等数据调整内容策略，提升传播与业务转化。"],
+    cardCover: "/projects/media-matrix/image22.png",
+    summary: "负责官方公众号及客户公众号代运营，参与公众号内容策划、更新维护、宣传物料设计与原创短视频制作，服务人民银行、商业银行等金融行业宣传场景。",
+    metrics: ["多平台 内容维护", "图文 + 视频 内容生产", "银行业 宣传场景", "公众号 代运营支持"],
+    detail: ["负责官方公众号及客户公众号内容策划、排版、更新维护，保障日常传播节奏。", "参与金融行业宣传长图、折页、海报、产品手册、H5、易拉宝等线上线下物料设计。", "围绕反假货币、人民币知识、小面额兑换、碳账户等主题，完成短视频脚本、拍摄、剪辑与画面包装。", "将图文、视频、公众号和线下物料统一到客户传播需求中，形成可持续复用的内容资产。"],
   },
   {
     id: "event-campaigns",
-    title: "大型活动策划与落地",
-    tag: "活动策划 / 跨部门统筹",
-    period: "省级及地方活动",
+    title: "大型活动策划与执行",
+    tag: "活动策划 / 直播搭建 / 竞赛执行 / 技术支持",
+    period: "2022 - 2024",
     tone: "green",
-    summary: "主导策划和执行十余场大型活动，覆盖银行业务技能竞赛、金融培训直播、反假货币知识竞赛等类型。",
-    metrics: ["10+ 大型活动", "直播 + 竞技", "跨区域协调"],
-    detail: ["从需求调研、方案定制到资源协调全流程操盘，推动多部门、多区域协作。", "融合线上直播、线下竞技和融媒体传播，突破传统活动形式。", "通过执行复盘沉淀项目方法，提升后续活动的标准化与响应速度。"],
+    cardCover: "/projects/event-campaigns/cover-launch.png",
+    summary: "围绕人民银行、地方总工会及金融机构的业务培训、技能竞赛、反假货币知识竞赛等场景，参与并推进多场金融行业大型活动的策划、执行与技术支持工作。",
+    metrics: ["10+ 大型活动", "8.3万 直播观看", "3.1万 互动评论", "2300人 线上初赛"],
+    detail: ["从活动目标、业务主题和参赛/培训对象出发，参与活动方案策划、流程设计与执行安排。", "统筹线上直播、线上答题、现场竞赛、远程分会场等不同活动形式，保障项目顺利落地。", "配合完成技术测试、彩排、应急预案、现场导播、字幕更新、互动承接等执行环节。", "围绕人民币知识、反假货币、数字人民币、现金服务等金融主题，提升活动专业性与传播效果。", "通过多次项目复盘，沉淀金融行业培训与竞赛活动的标准化执行经验。"],
+  },
+];
+
+const eventCampaignCases = [
+  {
+    time: "2024.11",
+    type: "线上直播培训",
+    title: "河北省特殊残缺污损人民币兑换业务线上直播培训",
+    lead: "为中国人民银行河北省分行组织的线上直播培训提供执行支持。项目组提前制定实施方案，完成多轮测试和彩排，并准备应急预案。",
+    result: "最终直播培训观看量达 8.3 万人次，互动评论 3.1 万条。",
+    source: "https://mp.weixin.qq.com/s/4Rzjtyc-zz_zWaBj-mUXow?scene=334",
+    images: ["/projects/event-campaigns/hebei-live/01.jpg", "/projects/event-campaigns/hebei-live/03.png", "/projects/event-campaigns/hebei-live/04.jpg", "/projects/event-campaigns/hebei-live/05.jpg"],
+  },
+  {
+    time: "2024.10",
+    type: "线下竞赛 / 知识竞答 / 数字人民币宣讲",
+    title: "廊坊市“农业银行杯”银行业人民币业务技能竞赛",
+    lead: "全程负责竞赛技术支持及全流程方案策划。活动覆盖廊坊辖区 12 家金融机构近 100 人，设置初赛、决赛、人民币知识竞答和数字人民币宣讲等环节。",
+    result: "在银行业人民币业务技能竞赛场景中沉淀了更完整的流程策划、现场执行和技术保障经验。",
+    source: "https://mp.weixin.qq.com/s/n_YD-ILJMkG0HMvypIQwuQ?scene=334",
+    images: ["/projects/event-campaigns/langfang-rmb/01.png", "/projects/event-campaigns/langfang-rmb/02.png", "/projects/event-campaigns/langfang-rmb/03.jpg", "/projects/event-campaigns/langfang-rmb/04.jpg", "/projects/event-campaigns/langfang-rmb/05.jpg", "/projects/event-campaigns/langfang-rmb/06.jpg"],
+  },
+  {
+    time: "2024.10",
+    type: "线上知识答题",
+    title: "衡水市银行业人民币业务技能竞赛",
+    lead: "为线上知识答题部分提供技术支持。活动由 6 家银行、60 名选手参加，通过手机扫码线上答题完成数字人民币和现金理论知识测验。",
+    result: "以轻量化线上答题承接专业竞赛环节，提高参赛效率并沉淀可复用的答题组织经验。",
+    source: "https://mp.weixin.qq.com/s/dqkEyN1a6rUrespxakgpFA?scene=334",
+    images: ["/projects/event-campaigns/hengshui-rmb/01.png", "/projects/event-campaigns/hengshui-rmb/03.png", "/projects/event-campaigns/hengshui-rmb/04.png"],
+  },
+  {
+    time: "2024.10",
+    type: "初赛线上答题 / 决赛现场竞赛",
+    title: "衡水市“沧州银行杯”反假货币知识竞赛",
+    lead: "全程负责竞赛方案策划及实施。初赛有 31 支金融机构队伍参加，决赛设置个人必答题、团队必答题、抢答题、风险题四个环节。",
+    result: "竞赛内容围绕人民币鉴别、假币收缴、鉴定及残缺污损人民币兑换等业务知识展开，兼顾专业性与现场观赏性。",
+    source: "https://mp.weixin.qq.com/s/hRyVSsi5Ie4bT6bBn22ttw?scene=334",
+    images: ["/projects/event-campaigns/hengshui-anti-counterfeit/01.jpg", "/projects/event-campaigns/hengshui-anti-counterfeit/02.jpg", "/projects/event-campaigns/hengshui-anti-counterfeit/03.jpg", "/projects/event-campaigns/hengshui-anti-counterfeit/04.jpg", "/projects/event-campaigns/hengshui-anti-counterfeit/05.jpg", "/projects/event-campaigns/hengshui-anti-counterfeit/06.jpg"],
+  },
+  {
+    time: "2023.06",
+    type: "多条线岗位技能竞赛",
+    title: "铜川市金融系统职工岗位技能大赛",
+    lead: "提供全流程竞赛方案和技术服务。活动覆盖反洗钱业务、反假币业务、国库业务、征信服务标准化四个条线。",
+    result: "24 支代表队、104 名选手进入现场决赛，形成兼具规模感和专业性的金融系统岗位技能赛事。",
+    source: "https://mp.weixin.qq.com/s/1XArTzP3NuwJeM4JVURMOQ?scene=334",
+    images: ["/projects/event-campaigns/tongchuan-skills/01.jpg", "/projects/event-campaigns/tongchuan-skills/02.jpg", "/projects/event-campaigns/tongchuan-skills/03.jpg", "/projects/event-campaigns/tongchuan-skills/04.jpg", "/projects/event-campaigns/tongchuan-skills/06.jpg"],
+  },
+  {
+    time: "2022.08",
+    type: "发布会 / 线上线下宣传 / 技术支持",
+    title: "汉口银行个人碳账户发布会",
+    lead: "围绕汉口银行个人碳账户与绿色信用卡试点工作启动仪式，提供一整套线上线下宣传方案，并在发布会现场提供技术支持。",
+    result: "通过发布会主视觉、会场屏幕、户外传播素材和现场技术保障，协助完成绿色金融主题项目的正式亮相。",
+    images: ["/projects/event-campaigns/hankou-carbon/stage-main.png", "/projects/event-campaigns/hankou-carbon/stage-launch.png", "/projects/event-campaigns/hankou-carbon/launch-screen.png", "/projects/event-campaigns/hankou-carbon/carbon-account.png", "/projects/event-campaigns/hankou-carbon/outdoor-screen.jpg", "/projects/event-campaigns/hankou-carbon/news-launch.jpg", "/projects/event-campaigns/hankou-carbon/venue-wide.jpg"],
+  },
+  {
+    time: "2022.06",
+    type: "线上答题 / 现场实操 / 远程分会场直播",
+    title: "廊坊市反假货币知识与技能大赛",
+    lead: "提供全流程竞赛方案和技术服务。活动初赛约 2300 人参与，决赛采用主会场、分会场、网络直播同步进行的模式。",
+    result: "在时间紧、任务重的条件下完成多轮模拟测试和远程竞赛保障，扩大了竞赛覆盖面和公众传播效果。",
+    source: "https://mp.weixin.qq.com/s/P-VmHtOTcQMSaQJ0ruWhjQ?scene=334",
+    images: ["/projects/event-campaigns/langfang-anti-counterfeit/cover.png", "/projects/event-campaigns/langfang-anti-counterfeit/01.jpg", "/projects/event-campaigns/langfang-anti-counterfeit/02.jpg", "/projects/event-campaigns/langfang-anti-counterfeit/03.jpg", "/projects/event-campaigns/langfang-anti-counterfeit/04.jpg", "/projects/event-campaigns/langfang-anti-counterfeit/05.jpg", "/projects/event-campaigns/langfang-anti-counterfeit/06.jpg"],
   },
 ];
 
@@ -352,8 +419,9 @@ function ContactModal({ open, onClose }) {
 function Home({ navigate }) {
   const [contactOpen, setContactOpen] = useState(false);
   const showContact = () => setContactOpen(true);
+  const strengthImages = [2, 1, 3, 4, 5, 6];
   return <><div className="noise" /><Header onContact={showContact} /><main className="home-main">
-    <section className="hero" id="hero"><div className="hero-beams-bg" aria-hidden="true"><Suspense fallback={null}><Beams beamWidth={2.8} beamHeight={20} beamNumber={20} lightColor="#7df7f2" speed={2.45} noiseIntensity={1.05} scale={0.16} rotation={-10} /></Suspense></div><video className="hero-video" autoPlay loop muted playsInline poster={assetPath("/visual-poster.svg")}><source src={assetPath("/hero-bg.mp4")} type="video/mp4" /></video><div className="motion"><span/><span/><span/></div><div className="hero-inner"><p className="eyebrow">New Media Operations / Brand Growth</p><h1>把品牌、内容与增长，做成可以持续运转的系统。</h1><p>我是栗帆，新媒体运营与海外增长运营。擅长从 0 到 1 搭建品牌传播体系，统筹社媒矩阵、短视频内容、投流优化、活动策划与项目落地。</p><div className="actions"><a className="primary" href="#projects">查看项目</a><ContactButton className="ghost" onClick={showContact}>获取联系</ContactButton></div></div><div className="hero-bottom"><span>Portfolio 2026</span><span>Shenzhen / Overseas Growth</span></div></section>
+    <section className="hero" id="hero"><div className="hero-beams-bg" aria-hidden="true"><Suspense fallback={null}><Beams beamWidth={2.8} beamHeight={20} beamNumber={20} lightColor="#7df7f2" speed={2.45} noiseIntensity={1.05} scale={0.16} rotation={-10} /></Suspense></div><video className="hero-video" autoPlay loop muted playsInline poster={assetPath("/visual-poster.svg")}><source src={assetPath("/hero-bg.mp4")} type="video/mp4" /></video><div className="motion"><span/><span/><span/></div><div className="hero-inner"><p className="eyebrow">New Media Operations / Brand Growth</p><h1>把品牌、内容与增长，做成可以持续运转的系统。</h1><p>我是栗帆，新媒体运营与海外增长运营。擅长从 0 到 1 搭建品牌传播体系，统筹社媒矩阵、短视频内容、投流优化、活动策划与项目落地。</p><div className="actions"><a className="primary" href="#projects">查看项目</a><ContactButton className="ghost" onClick={showContact}>获取联系</ContactButton></div></div><div className="hero-bottom"><span>Portfolio 2026</span></div></section>
     <AuroraBackdrop className="home-aurora-bg" />
 
     <section className="section" id="experience"><div className="section-head wide"><p className="eyebrow">Profile</p><h2>个人经历</h2></div><div className="experience-layout"><div className="timeline">{timeline.map((job, index) => <CardGlow className="timeline-glow" key={job.period} tone="cyan" animated={index === 0}><article className="timeline-item"><div className="timeline-meta"><time>{job.period}</time>{job.logo ? <span className="company-logo-badge"><img className="company-logo" src={assetPath(job.logo)} alt={`${job.company} logo`} /></span> : null}{job.avatars ? <div className="company-avatar-stack">{job.avatars.map((avatar) => <span className="company-avatar" key={avatar.src}><img src={assetPath(avatar.src)} alt={avatar.alt} /></span>)}</div> : null}</div><div><h3>{job.company}{job.note ? <span className="company-note">{job.note}</span> : null}</h3><strong>{job.role}</strong><p>{job.intro}</p><ul>{job.points.map((point) => <li key={point}>{point}</li>)}</ul></div><div className="job-stat-grid">{job.stats.map(([v,l]) => <div className="job-stat" key={l}><strong>{v}</strong><span>{l}</span></div>)}</div></article></CardGlow>)}</div></div></section>
@@ -362,7 +430,7 @@ function Home({ navigate }) {
 
     <section className="section works-section" id="works"><div className="section-head"><p className="eyebrow">Works</p><h2>作品展示</h2></div><div className="works-grid">{works.map(([title, text], index) => <CardGlow className="work-glow" key={title} tone={["cyan", "amber", "violet", "green"][index % 4]}><article className="work-card"><div className="work-visual"><span>{String(index + 1).padStart(2, "0")}</span></div><h3>{title}</h3><p>{text}</p></article></CardGlow>)}</div></section>
 
-    <section className="section" id="strengths"><div className="section-head wide"><p className="eyebrow">Strengths & Toolkit</p><h2>个人优势</h2></div><div className="strength-layout"><div className="strength-grid">{abilities.map(([t,txt],i) => <CardGlow className="strength-glow" key={t} tone={["cyan", "amber", "violet", "green", "cyan", "violet"][i % 6]}><article className="strength"><span>{String(i+1).padStart(2,'0')}</span><h3>{t}</h3><p>{txt}</p></article></CardGlow>)}</div><aside className="software-panel"><div><p className="eyebrow">掌握技能</p><div className="software-grid">{software.map((item) => <span className={`software-icon ${item.whiteBg ? "white-logo" : ""}`} key={item.name} tabIndex="0" aria-label={`${item.name}：${item.level}，${item.desc}`}><span className="logo-plate"><img src={assetPath(item.src)} alt="" /></span><span className="skill-tooltip"><strong>{item.name}</strong><em>{item.level}</em><small>{item.desc}</small></span></span>)}</div></div><div className="extended-skill-panel"><p className="eyebrow">延展能力</p><div className="extended-skill-grid">{extendedSkills.map((item) => <article className="extended-skill" key={item.title}><MiniSkillIcon type={item.icon} /><span>{item.title}</span></article>)}</div></div></aside></div></section>
+    <section className="section" id="strengths"><div className="section-head wide"><p className="eyebrow">Strengths & Toolkit</p><h2>个人优势</h2></div><div className="strength-layout"><div className="strength-grid">{abilities.map(([t,txt],i) => <CardGlow className="strength-glow" key={t} tone={["cyan", "amber", "violet", "green", "cyan", "violet"][i % 6]}><article className="strength"><div className="strength-visual" aria-hidden="true"><img src={assetPath(`/strengths/strength-${strengthImages[i]}.jpg`)} alt="" /></div><div className="strength-content"><span>{String(i+1).padStart(2,'0')}</span><h3>{t}</h3><p>{txt}</p></div></article></CardGlow>)}</div><aside className="software-panel"><div><p className="eyebrow">掌握技能</p><div className="software-grid">{software.map((item) => <span className={`software-icon ${item.whiteBg ? "white-logo" : ""}`} key={item.name} tabIndex="0" aria-label={`${item.name}：${item.level}，${item.desc}`}><span className="logo-plate"><img src={assetPath(item.src)} alt="" /></span><span className="skill-tooltip"><strong>{item.name}</strong><em>{item.level}</em><small>{item.desc}</small></span></span>)}</div></div><div className="extended-skill-panel"><p className="eyebrow">延展能力</p><div className="extended-skill-grid">{extendedSkills.map((item) => <article className="extended-skill" key={item.title}><MiniSkillIcon type={item.icon} /><span>{item.title}</span></article>)}</div></div></aside></div></section>
 
     <section className="contact" id="contact"><div><p className="eyebrow">Contact</p><h2>期待和清晰、有执行力的团队一起，把增长做实。</h2><p>可围绕新媒体运营、品牌运营、海外增长、短视频内容、活动策划和项目统筹展开合作。</p><div className="actions"><ContactButton className="primary" onClick={showContact}>查看联系方式</ContactButton><a className="ghost" href="#hero">回到顶部</a></div></div></section>
   </main><ContactModal open={contactOpen} onClose={() => setContactOpen(false)} /></>;
@@ -971,13 +1039,250 @@ function ProjectPeriodCard({ startYear, startMonth, startLabel, endYear, endMont
   );
 }
 
+function EventImageGrid({ images, title, paperIndexes = [] }) {
+  const [active, setActive] = useState(0);
+  const go = (direction) => {
+    setActive((current) => (current + direction + images.length) % images.length);
+  };
+  const ordered = images.map((src, index) => {
+    const offset = (index - active + images.length) % images.length;
+    return { src, index, offset };
+  });
+
+  return (
+    <div className="event-image-stack">
+      <div className="event-stack-stage">
+        {ordered.map(({ src, index, offset }) => (
+          <figure
+            key={src}
+            className={`event-stack-card stack-pos-${Math.min(offset, 4)} ${offset === 0 ? "active" : ""} ${paperIndexes.includes(index) ? "is-paper" : ""}`}
+            style={{ "--stack-order": images.length - offset }}
+          >
+            <img src={assetPath(src)} alt={`${title}现场图片 ${index + 1}`} loading="lazy" />
+          </figure>
+        ))}
+        <button className="event-stack-arrow prev" type="button" onClick={() => go(-1)} aria-label="上一张图片" />
+        <button className="event-stack-arrow next" type="button" onClick={() => go(1)} aria-label="下一张图片" />
+      </div>
+      <div className="event-stack-footer">
+        <div className="event-stack-dots" aria-label="图片分页">
+          {images.map((src, index) => (
+            <button className={index === active ? "active" : ""} type="button" key={src} onClick={() => setActive(index)} aria-label={`查看第 ${index + 1} 张图片`} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MatrixImageRail({ images, title }) {
+  const railRef = useRef(null);
+  const dragState = useRef(null);
+  const didDrag = useRef(false);
+  const scrollRail = (direction) => {
+    const rail = railRef.current;
+    if (!rail) return;
+    const card = rail.querySelector("figure");
+    const gap = parseFloat(getComputedStyle(rail).columnGap) || 38;
+    const distance = card ? card.getBoundingClientRect().width + gap : rail.clientWidth * 0.72;
+    rail.scrollBy({ left: direction * distance, behavior: "smooth" });
+  };
+  const startDrag = (event) => {
+    const rail = railRef.current;
+    if (!rail) return;
+    didDrag.current = false;
+    dragState.current = { x: event.clientX, left: rail.scrollLeft };
+    rail.setPointerCapture?.(event.pointerId);
+  };
+  const moveDrag = (event) => {
+    const rail = railRef.current;
+    if (!rail || !dragState.current) return;
+    const delta = event.clientX - dragState.current.x;
+    if (Math.abs(delta) > 3) didDrag.current = true;
+    rail.scrollLeft = dragState.current.left - delta;
+  };
+  const endDrag = () => {
+    dragState.current = null;
+    window.setTimeout(() => {
+      didDrag.current = false;
+    }, 0);
+  };
+
+  return (
+    <div className="matrix-rail-wrap">
+      <button className="matrix-rail-arrow prev" type="button" onClick={() => scrollRail(-1)} aria-label="向左滑动图片" />
+      <div
+        className="matrix-image-rail"
+        ref={railRef}
+        aria-label={`${title}图片，可左右滑动`}
+        onPointerDown={startDrag}
+        onPointerMove={moveDrag}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onPointerLeave={endDrag}
+      >
+        {images.map((src, index) => (
+          <figure key={src} onClick={() => { if (!didDrag.current) scrollRail(1); }}>
+            <img src={assetPath(src)} alt={`${title}素材 ${index + 1}`} loading="lazy" draggable="false" />
+          </figure>
+        ))}
+      </div>
+      <button className="matrix-rail-arrow next" type="button" onClick={() => scrollRail(1)} aria-label="向右滑动图片" />
+    </div>
+  );
+}
+
+function EventVideoCard({ video, source, title }) {
+  return (
+    <div className="event-video-card">
+      <div className="video-link-fallback green-fallback">
+        <span>Video</span>
+        <strong>活动视频记录</strong>
+        <p>该视频来自微信视频内容，部分环境下可能需要在微信文章中打开观看。</p>
+        <div className="event-video-actions">
+          <a href={video} target="_blank" rel="noreferrer">打开视频</a>
+          <a href={source} target="_blank" rel="noreferrer">查看原文</a>
+        </div>
+      </div>
+      <iframe src={video} title={`${title}视频`} loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" />
+    </div>
+  );
+}
+
+function EventCampaignsCase() {
+  const formatEventDate = (time) => {
+    const [year, month] = time.split(".");
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return { year, month, label: monthNames[Number(month) - 1] || "Month" };
+  };
+  return (
+    <section className="event-case">
+      <div className="event-stat-strip">
+        <article><strong>10+</strong><span>金融行业大型活动</span></article>
+        <article><strong>8.3万</strong><span>线上直播培训观看</span></article>
+        <article><strong>3.1万</strong><span>直播互动评论</span></article>
+        <article><strong>2300人</strong><span>大型线上竞赛初赛</span></article>
+      </div>
+
+      <div className="event-timeline-list">
+        {eventCampaignCases.map((item, index) => (
+          <article className="event-timeline-item" key={item.title}>
+            <div className="event-time-rail">
+              <time className="event-calendar-date" dateTime={item.time}>
+                <small>{formatEventDate(item.time).year}</small>
+                <strong>{formatEventDate(item.time).month}</strong>
+                <em>{formatEventDate(item.time).label}</em>
+              </time>
+            </div>
+            <div className="event-case-card">
+              <div className="event-case-copy">
+                <span>{item.type}</span>
+                <h3>{item.title}</h3>
+                <p>{item.lead}</p>
+                <strong>{item.result}</strong>
+                {item.source ? <a href={item.source} target="_blank" rel="noreferrer">查看原文</a> : null}
+              </div>
+              {item.video ? <EventVideoCard video={item.video} source={item.source} title={item.title} /> : null}
+              <EventImageGrid images={item.images} title={item.title} />
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+const mediaMatrixSections = [
+  {
+    label: "01 / Official Accounts",
+    title: "公众号内容策划与更新维护",
+    text: "参与官方公众号及客户公众号代运营，围绕银行业宣传节点完成选题规划、内容排版、日常更新和活动信息维护，承接反假云上帮扶、湖北省硬币自循环系统、小面额兑换服务平台等公众号内容场景。",
+    layout: "carousel",
+    images: ["/projects/media-matrix/image1.png", "/projects/media-matrix/image4.png", "/projects/media-matrix/image3.png", "/projects/media-matrix/image2.png", "/projects/media-matrix/image7.png", "/projects/media-matrix/image6.png", "/projects/media-matrix/image5.png"],
+  },
+  {
+    label: "02 / Visual Materials",
+    title: "金融宣传物料与视觉体系",
+    text: "根据人民银行及商业银行的宣传需求，参与长图、折页、海报、公示物料、产品手册、H5 页面和易拉宝等视觉内容制作，让专业金融信息更适合线上传播与线下网点展示。",
+    layout: "stack",
+    images: ["/projects/media-matrix/image9.png", "/projects/media-matrix/image10.png", "/projects/media-matrix/image11.png", "/projects/media-matrix/image12.png", "/projects/media-matrix/image13.png", "/projects/media-matrix/image14.png"],
+    paperIndexes: [0, 1, 2, 3],
+  },
+  {
+    label: "03 / Video Production",
+    title: "原创短视频与宣传片制作",
+    text: "围绕反假货币、人民币知识、绿色金融与银行服务场景，参与短视频脚本、拍摄、剪辑、字幕和画面包装，支持宣贯视频、产品宣传片、操作指南视频及企业宣传片等内容生产。",
+    layout: "stack",
+    images: ["/projects/media-matrix/image15.png", "/projects/media-matrix/image16.png", "/projects/media-matrix/image17.png", "/projects/media-matrix/image18.png", "/projects/media-matrix/image19.png", "/projects/media-matrix/image20.png", "/projects/media-matrix/image21.png", "/projects/media-matrix/image22.png", "/projects/media-matrix/image23.png"],
+  },
+];
+
+function MatrixDetailPointIcon({ index }) {
+  const icons = [
+    "M5 5h14v14H5V5Zm4 4h6M9 12h6M9 15h4",
+    "M4 6h16M6 6v12h12V6M8 10h8M8 13h5M15 13h1M8 16h8",
+    "M5 7h14v10H5V7Zm5 2.5 5 2.5-5 2.5v-5Z",
+    "M5 8c2-2 4-3 7-3s5 1 7 3v8c-2 2-4 3-7 3s-5-1-7-3V8Zm4 4h6m-3-3v6",
+  ];
+  return <svg className="detail-point-icon matrix-point-icon" viewBox="0 0 24 24" aria-hidden="true"><path d={icons[index % icons.length]} /></svg>;
+}
+
+function MediaMatrixCase() {
+  return (
+    <section className="matrix-case">
+      <div className="matrix-overview">
+        <p className="eyebrow">Content Matrix</p>
+        <h2>把银行业专业内容，拆成可传播的图文、视频与平台栏目。</h2>
+        <p>围绕银行业宣传节奏，将政策解读、活动信息、金融知识科普和品牌内容拆解为公众号栏目、图文物料与短视频素材，让专业内容更容易被理解、传播和持续维护。</p>
+      </div>
+      <div className="matrix-stat-grid">
+        <article><strong>公众号</strong><span>内容策划 / 排版 / 更新维护</span></article>
+        <article><strong>图文物料</strong><span>长图 / 折页 / 海报 / H5</span></article>
+        <article><strong>短视频</strong><span>脚本 / 拍摄 / 剪辑 / 包装</span></article>
+        <article><strong>金融场景</strong><span>人民银行 / 商业银行宣传支持</span></article>
+      </div>
+      <div className="matrix-section-list">
+        {mediaMatrixSections.map((section) => (
+          <article className="matrix-section" key={section.title}>
+            <div className="matrix-copy">
+              <span>{section.label}</span>
+              <h3>{section.title}</h3>
+              <p>{section.text}</p>
+            </div>
+            {section.layout === "stack" ? (
+              <EventImageGrid images={section.images} title={section.title} paperIndexes={section.paperIndexes || []} />
+            ) : section.groups ? (
+              <div className="matrix-category-grid">
+                {section.groups.map((group) => (
+                  <div className="matrix-category" key={group.title}>
+                    <strong>{group.title}</strong>
+                    <div className="matrix-image-grid">
+                      {group.images.map((src, index) => (
+                        <figure key={src} className={index === 0 ? "is-featured" : ""}>
+                          <img src={assetPath(src)} alt={`${group.title}素材 ${index + 1}`} loading="lazy" />
+                        </figure>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <MatrixImageRail images={section.images} title={section.title} />
+            )}
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function ProjectPage({ project, navigate }) {
   const [contactOpen, setContactOpen] = useState(false);
-  const detailClass = project.id === "kol-china-trip" || project.id === "overseas-growth" ? "wide-detail" : "";
-  const hasCustomHero = project.id === "kol-china-trip" || project.id === "overseas-growth";
+  const detailClass = project.id === "kol-china-trip" || project.id === "overseas-growth" || project.id === "event-campaigns" || project.id === "media-matrix" ? "wide-detail" : "";
+  const hasCustomHero = project.id === "kol-china-trip" || project.id === "overseas-growth" || project.id === "event-campaigns" || project.id === "media-matrix";
 
   const pageStyle = project.id === "overseas-growth" ? { "--project-bg": `url("${assetPath("/projects/overseas-growth/cover-social.png")}")` } : undefined;
-  return <><div className="noise"/><header className="detail-header"><button className="ghost" type="button" onClick={() => navigate('/')}>返回首页</button><ContactButton onClick={() => setContactOpen(true)} /></header><main className={`detail-page tone-${project.tone} project-detail-${project.id}`} style={pageStyle}><AuroraBackdrop className="detail-aurora-bg" /><section className={`detail-hero ${hasCustomHero ? "compact" : ""}`}><div><p className="eyebrow">{project.tag}</p>{project.id === "overseas-growth" ? <h1 className="balanced-title"><span>JalanJalan China</span><span>海外文旅品牌从 0 到 1</span></h1> : <h1>{project.title}</h1>}<p>{project.summary}</p></div>{hasCustomHero ? null : <div className={`detail-visual ${project.cover ? "with-cover" : ""}`}>{project.cover ? <img src={assetPath(project.cover)} alt={`${project.title}封面`} /> : <><span/><span/><span/></>}</div>}</section><section className={`detail-body ${detailClass}`}>{project.id === "kol-china-trip" ? <KolPeriodCard /> : project.id === "overseas-growth" ? <ProjectPeriodCard startYear="2025" startMonth="11" startLabel="Nov" endYear="2026" endMonth="05" endLabel="May" /> : <div className="detail-meta"><span>项目周期</span><strong>{project.period}</strong></div>}<div className={`detail-meta ${project.id === "kol-china-trip" || project.id === "overseas-growth" ? "visual-results" : ""}`}><span>关键结果</span>{project.id === "kol-china-trip" || project.id === "overseas-growth" ? <KeyResultGrid metrics={project.metrics} /> : <strong>{project.metrics.join(' / ')}</strong>}</div><div className="detail-list"><h2>项目职责与亮点</h2><div className="detail-point-list">{project.detail.map((x, index) => <p key={x}>{project.id === "kol-china-trip" ? <KolDetailPointIcon index={index} /> : project.id === "overseas-growth" ? <OverseasDetailPointIcon index={index} /> : <DetailPointIcon index={index} />}<span>{x}</span></p>)}</div></div></section>{project.id === "overseas-growth" ? <OverseasGrowthCase /> : null}{project.id === "kol-china-trip" ? <KolChinaTripCase /> : null}</main><ContactModal open={contactOpen} onClose={() => setContactOpen(false)} /></>;
+  return <><div className="noise"/><header className="detail-header"><button className="ghost" type="button" onClick={() => navigate('/')}>返回首页</button><ContactButton onClick={() => setContactOpen(true)} /></header><main className={`detail-page tone-${project.tone} project-detail-${project.id}`} style={pageStyle}><AuroraBackdrop className="detail-aurora-bg" /><section className={`detail-hero ${hasCustomHero ? "compact" : ""}`}><div><p className="eyebrow">{project.tag}</p>{project.id === "overseas-growth" ? <h1 className="balanced-title"><span>JalanJalan China</span><span>海外文旅品牌从 0 到 1</span></h1> : <h1>{project.title}</h1>}<p>{project.summary}</p></div>{hasCustomHero ? null : <div className={`detail-visual ${project.cover ? "with-cover" : ""}`}>{project.cover ? <img src={assetPath(project.cover)} alt={`${project.title}封面`} /> : <><span/><span/><span/></>}</div>}</section><section className={`detail-body ${project.id === "media-matrix" ? "matrix-detail" : detailClass}`}>{project.id === "media-matrix" ? null : project.id === "kol-china-trip" ? <KolPeriodCard /> : project.id === "overseas-growth" ? <ProjectPeriodCard startYear="2025" startMonth="11" startLabel="Nov" endYear="2026" endMonth="05" endLabel="May" /> : project.id === "event-campaigns" ? <ProjectPeriodCard startYear="2022" startMonth="06" startLabel="Jun" endYear="2024" endMonth="11" endLabel="Nov" route={["武汉", "廊坊", "铜川", "衡水", "河北"]} /> : <div className="detail-meta"><span>项目周期</span><strong>{project.period}</strong></div>}{project.id === "media-matrix" ? null : <div className={`detail-meta ${project.id === "kol-china-trip" || project.id === "overseas-growth" || project.id === "event-campaigns" ? "visual-results" : ""}`}><span>关键结果</span>{project.id === "kol-china-trip" || project.id === "overseas-growth" || project.id === "event-campaigns" ? <KeyResultGrid metrics={project.metrics} /> : <strong>{project.metrics.join(' / ')}</strong>}</div>}<div className="detail-list"><h2>项目职责与亮点</h2><div className="detail-point-list">{project.detail.map((x, index) => <p key={x}>{project.id === "media-matrix" ? <MatrixDetailPointIcon index={index} /> : project.id === "kol-china-trip" ? <KolDetailPointIcon index={index} /> : project.id === "overseas-growth" ? <OverseasDetailPointIcon index={index} /> : <DetailPointIcon index={index} />}<span>{x}</span></p>)}</div></div></section>{project.id === "overseas-growth" ? <OverseasGrowthCase /> : null}{project.id === "kol-china-trip" ? <KolChinaTripCase /> : null}{project.id === "event-campaigns" ? <EventCampaignsCase /> : null}{project.id === "media-matrix" ? <MediaMatrixCase /> : null}</main><ContactModal open={contactOpen} onClose={() => setContactOpen(false)} /></>;
 }
 
 function App() {
